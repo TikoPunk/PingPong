@@ -1,60 +1,60 @@
-#include <avr/sleep.h>  
-#define BUTTON1   2
-#define LED1      5
-#define LED2      6
-#define LED3      9
-#define BUTTON2  12
+#include <avr/sleep.h>
+#define BUTTON1       2
+#define BUTTON2       12
+#define LED_LIGHT_1   5
+#define LED_LIGHT_2   6
+#define LED_LIGHT_3   9
 
-#define NUMLEDS   2     //Add 1 for the right number
+#define NUMLEDS       2     //Add 1 for the right number
 
 #define PAUSE 500
 
 class Player
 {
   private:
-    String nme;
+    String name;
     int score = 0;
 
   public:
-    Player(int);
-    String getName() {return nme;};
+    Player(String);
+    String getName() {return name;};
     void increaseScore() { score++;};
     int getScore() {return score;};
 };
 
-Player::Player(int newNme)
+Player::Player(String newName)
 {
-  nme = newNme;
+  name = newName;
 }
 
-int led[] = {LED1, LED2, LED3};
+int ledLights[] = {LED_LIGHT_1, LED_LIGHT_2, LED_LIGHT_3};
 int button[] = {BUTTON1, BUTTON2};
 int turn = 0;
 
 unsigned long t1;
 unsigned long t2;
 
-Player players[] = {new Player("Player two"), new Player("Player one")};
+Player players[] = {Player("Player one"), Player("Player two")};
 
 void setup() {
   Serial.begin(9600); 
   pinMode(BUTTON1, INPUT);
-  pinMode(LED1, OUTPUT);
-  pinMode(LED2, OUTPUT);
-  pinMode(LED3, OUTPUT);
+  pinMode(LED_LIGHT_1, OUTPUT);
+  pinMode(LED_LIGHT_2, OUTPUT);
+  pinMode(LED_LIGHT_3, OUTPUT);
   pinMode(BUTTON2, INPUT);
 
 }
 
-void reverse(int* led, int num)
+void reverse(int* ledLights, int num)
 {
-  int* temp;
+  int temp;
   
   for (auto i = 0; i < num; i++)
   {
-    temp = led[i];
-    led[i] = led[num - i];
-    led[num - i] = temp;
+    temp = ledLights[i];
+    ledLights[i] = ledLights[num - i];
+    ledLights[num - i] = temp;
   }
 }
 
@@ -62,22 +62,22 @@ void loop() {
   
   turn++;
 
-    reverse(led, NUMLEDS);
+    reverse(ledLights, NUMLEDS);
   
-    analogWrite(led[0],200);
+    analogWrite(ledLights[0],200);
 
     delay(PAUSE);
-    analogWrite(led[0],0);
-    analogWrite(led[1],200);
-
-    delay(PAUSE);
-
-    analogWrite(led[1],0);
-    analogWrite(led[2],200);
+    analogWrite(ledLights[0],0);
+    analogWrite(ledLights[1],200);
 
     delay(PAUSE);
 
-    analogWrite(led[2],0);
+    analogWrite(ledLights[1],0);
+    analogWrite(ledLights[2],200);
+
+    delay(PAUSE);
+
+    analogWrite(ledLights[2],0);
 
     t1 = millis();
 
@@ -110,9 +110,9 @@ void loop() {
 
       for (auto i = 0; i < 3; i++)
       {
-        analogWrite(led[0],200);
+        analogWrite(ledLights[0],200);
         delay(250);
-        analogWrite(led[0],0);
+        analogWrite(ledLights[0],0);
         delay(250);
       }
         off();
@@ -126,4 +126,3 @@ void off()
     sleep_enable();          // enables the sleep bit in the mcucr register  
     sleep_mode();            // here the device is actually put to sleep!!  
 }  
-
